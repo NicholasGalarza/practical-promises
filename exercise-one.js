@@ -1,25 +1,27 @@
 /*********** I explain `exerciseUtils` ********
-*
-* exerciseUtils is a variable that comes from a file in this repo
-* The file `./utils` is on this level and name `utils.js`
-*
-* This file creates a `promisifiedReadFile` - CHECK ME OUT!!!
-*
-* The functions `blue` and `magenta` to help keep your code DRY
-*
-***********************************************/
+ *
+ * exerciseUtils is a variable that comes from a file in this repo
+ * The file `./utils` is on this level and name `utils.js`
+ *
+ * This file creates a `promisifiedReadFile` - CHECK ME OUT!!!
+ *
+ * The functions `blue` and `magenta` to help keep your code DRY
+ *
+ ***********************************************/
 
 'use strict';
 
 var Promise = require('bluebird'),
-    exerciseUtils = require('./utils');
+  exerciseUtils = require('./utils');
 
 var readFile = exerciseUtils.readFile,
-    promisifiedReadFile = exerciseUtils.promisifiedReadFile,
-    blue = exerciseUtils.blue,
-    magenta = exerciseUtils.magenta;
+  promisifiedReadFile = exerciseUtils.promisifiedReadFile,
+  blue = exerciseUtils.blue,
+  magenta = exerciseUtils.magenta;
 
-var args = process.argv.slice(2).map(function(st){ return st.toUpperCase(); });
+var args = process.argv.slice(2).map(function(st) {
+  return st.toUpperCase();
+});
 
 module.exports = {
   problemA: problemA,
@@ -31,12 +33,12 @@ module.exports = {
 };
 
 // runs every problem given as command-line argument to process
-args.forEach(function(arg){
+args.forEach(function(arg) {
   var problem = module.exports['problem' + arg];
   if (problem) problem();
 });
 
-function problemA () {
+function problemA() {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *
    * A. log poem one stanza one (ignore errors)
@@ -48,8 +50,8 @@ function problemA () {
   //   console.log('-- A. callback version --');
   //   blue(stanza);
   // });
-  
-  promisifiedReadFile('poem-one/stanza-01.txt').then(function(stanza){
+
+  promisifiedReadFile('poem-one/stanza-01.txt').then(function(stanza) {
     console.log('-- A. callback version --');
     blue(stanza);
   })
@@ -58,7 +60,7 @@ function problemA () {
 
 }
 
-function problemB () {
+function problemB() {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *
    * B. log poem one stanza two and three, in any order
@@ -75,10 +77,10 @@ function problemB () {
   //   console.log('-- B. callback version (stanza three) --');
   //   blue(stanza3);
   // });
-  promisifiedReadFile('poem-one/stanza-02.txt').then(function(stanza2){
+  promisifiedReadFile('poem-one/stanza-02.txt').then(function(stanza2) {
     console.log('-- B. callback version (stanza two) --');
     blue(stanza2);
-  }).then(promisifiedReadFile('poem-one/stanza-03.txt').then(function(stanza3){
+  }).then(promisifiedReadFile('poem-one/stanza-03.txt').then(function(stanza3) {
     console.log('-- B. callback version (stanza three) --');
     blue(stanza3);
   }));
@@ -88,7 +90,7 @@ function problemB () {
 
 }
 
-function problemC () {
+function problemC() {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *
    * C. read & log poem one stanza two and *then* read & log stanza three
@@ -110,20 +112,21 @@ function problemC () {
   //   });
   // });
 
-  promisifiedReadFile('poem-one/stanza-02.txt').then(function(stanza2){
+  promisifiedReadFile('poem-one/stanza-02.txt').then(function(stanza2) {
     console.log('-- B. callback version (stanza two) --');
     blue(stanza2);
-  }).then(promisifiedReadFile('poem-one/stanza-03.txt').then(function(stanza3){
+    return promisifiedReadFile('poem-one/stanza-03.txt');
+  }).then(function(stanza3) {
     console.log('-- B. callback version (stanza three) --');
     blue(stanza3);
-  }));
+  });
 
   // promise version (hint: don't need to nest `then` calls)
   // ???
 
 }
 
-function problemD () {
+function problemD() {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *
    * D. log poem one stanza four or an error if it occurs
@@ -136,19 +139,13 @@ function problemD () {
   //   if (err) magenta(err);
   //   else blue(stanza4);
   // });
-  promisifiedReadFile('poem-one/stanza-04.txt').then(function(err,stanza){
-    if (err) throw new Error;
-    console.log('-- A. callback version --');
-    blue(stanza);
-  }).catch(function errorHandler(err){
-    console.log(err);
-  })
-  // promise version
-  // ???
+  promisifiedReadFile('poem-one/stanza-04.txt').then(stanza => blue(stanza), error => console.log(error));
+// promise version
+// ???
 
 }
 
-function problemE () {
+function problemE() {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *
    * E. read & log poem one stanza three and *then* read & log stanza four
@@ -157,11 +154,11 @@ function problemE () {
    */
 
   // callback version
-  readFile('poem-one/stanza-03.txt', function (err, stanza3) {
+  readFile('poem-one/stanza-03.txt', function(err, stanza3) {
     console.log('-- E. callback version (stanza three) --');
     if (err) return magenta(err);
     blue(stanza3);
-    readFile('poem-one/wrong-file-name.txt', function (err2, stanza4) {
+    readFile('poem-one/wrong-file-name.txt', function(err2, stanza4) {
       console.log('-- E. callback version (stanza four) --');
       if (err2) return magenta(err2);
       blue(stanza4);
@@ -173,7 +170,7 @@ function problemE () {
 
 }
 
-function problemF () {
+function problemF() {
   /* * * * * * * * * * * * * * * * * * * * * * * * * * * *
    *
    * F. read & log poem one stanza three and *then* read & log stanza four
@@ -183,7 +180,7 @@ function problemF () {
    */
 
   // callback version
-  readFile('poem-one/stanza-03.txt', function (err, stanza3) {
+  readFile('poem-one/stanza-03.txt', function(err, stanza3) {
     console.log('-- F. callback version (stanza three) --');
     if (err) {
       magenta(err);
@@ -191,7 +188,7 @@ function problemF () {
       return;
     }
     blue(stanza3);
-    readFile('poem-one/wrong-file-name.txt', function (err2, stanza4) {
+    readFile('poem-one/wrong-file-name.txt', function(err2, stanza4) {
       console.log('-- F. callback version (stanza four) --');
       if (err2) magenta(err2);
       else blue(stanza4);

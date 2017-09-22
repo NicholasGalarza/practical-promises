@@ -95,6 +95,7 @@ describe('exercise one (involving poem one)', function () {
 				var blueCalledWithStanza = (getCall(blue, 0)[0] == stanzas[3]);
 				var magentaCalledWithError = (getCall(magenta, 0)[0] instanceof Error);
 				var exactlyOneOccurred = exactlyOneIsTrue(blueCalledWithStanza, magentaCalledWithError);
+				console.log('HELLO', blueCalledWithStanza, magentaCalledWithError); 
 				expect(exactlyOneOccurred).to.equal(true);
 				done();
 			}, 250);
